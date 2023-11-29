@@ -37,7 +37,7 @@ export default function Login() {
     }else {
       const result = await response.json();
       const jwtData = await processJWT(result.token, result.clientId);
-      setUser({...jwtData});
+      setUser({token: result.token, ...jwtData});
       router.push("/client");
     }
   };
