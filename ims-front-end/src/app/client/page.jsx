@@ -2,10 +2,15 @@
 
 import { OrdersTable } from "./components/OrderTable"
 import { useUserContext } from "../AppContext"
+import { redirect } from "next/navigation";
 
 
 export default function Client() {
   const { user } = useUserContext();
+
+  if (Object.keys(user).length === 0) {
+    redirect("/login");
+  }
   
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
