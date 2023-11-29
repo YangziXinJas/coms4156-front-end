@@ -2,12 +2,12 @@
 
 import { useState, useMemo } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
-import { useRouter } from "next/router";
+import { useUserContext } from "../AppContext"
 import * as jose from "jose";
 
 export default function Login() {
   const [selectedKeys, setSelectedKeys] = useState(new Set(["retail"]));
-
+  const { user, setUser } = useUserContext();
   const selectedValue = useMemo(
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
     [selectedKeys]
@@ -35,7 +35,7 @@ export default function Login() {
     }else {
       const result = await response.json();
       const jwtData = await processJWT(result.token, result.clientId);
-
+      setUser({...jwtData});
     }
   };
 
