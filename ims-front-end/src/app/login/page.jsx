@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { useUserContext } from "../AppContext"
 import * as jose from "jose";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [selectedKeys, setSelectedKeys] = useState(new Set(["retail"]));
@@ -12,6 +13,7 @@ export default function Login() {
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
     [selectedKeys]
   );
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,6 +38,7 @@ export default function Login() {
       const result = await response.json();
       const jwtData = await processJWT(result.token, result.clientId);
       setUser({...jwtData});
+      router.push("/client");
     }
   };
 
