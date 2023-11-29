@@ -1,17 +1,19 @@
 "use client"
 
 import { OrdersTable } from "./components/OrderTable"
+import { useUserContext } from "../AppContext"
 
 
 export default function Client() {
+  const { user } = useUserContext();
   
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="flex flex-row items-center justify-center w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-full xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-3/5 px-6 py-8 flex flex-col gap-4">
           <div className="flex flex-row gap-8">
-            <p>Client ID: {"123123"}</p>
-            <p>Client Type: {"Warehouse"}</p>
+            <p>Client ID: {user.clientId}</p>
+            <p>Client Type: {user.clientType}</p>
           </div>
           <div>
             <OrdersTable />
