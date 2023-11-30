@@ -81,7 +81,7 @@ export default function Location({ params }) {
           </div>
         </div>
         <div>
-          <InventoryTable />
+          <InventoryTable locationId={params.locationId}/>
         </div>
       </div>
     </div>

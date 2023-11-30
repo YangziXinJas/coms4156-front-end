@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useUserContext } from "@/app/AppContext";
 import Link from 'next/link'
 
-export function InventoryTable() {
+export function InventoryTable({ locationId }) {
   const columns = [
     {
       key: "itemId",
@@ -25,8 +25,9 @@ export function InventoryTable() {
   ];
   const [ data, setData ] = useState([]);
   const { user } = useUserContext();
-  const fetchData = async () => {
-    const response = await fetch("" + user.clientId, {
+
+  const fetchIventory = async () => {
+    const response = await fetch("http://localhost:8001/itemLocation/getByLocationId/" + locationId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,18 +45,6 @@ export function InventoryTable() {
     const cellValue = order[columnKey];
 
     switch (columnKey) {
-      case "orderId":
-        return (
-          <Link href={`/client/order/${cellValue}`}>{cellValue}</Link>
-        );
-      case "orderDate":
-        return (
-          <div>{cellValue}</div>
-        );
-      case "orderStatus":
-        return (
-          <div>{cellValue}</div>
-        );
       default:
         return cellValue;
     }
@@ -69,9 +58,9 @@ export function InventoryTable() {
       a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
 
   useEffect(() => {
-    fetchData().then((res) => {
-      res = res.map((item, index) => (
-        {key: index + 1 + "", orderId: item.orderId, orderDate: item.orderDate.split('T')[0], orderStatus: item.orderStatus}
+    fetchIventory().then((res) => {
+      res = res.map((obj, index) => (
+        {key: index + 1 + "", itemId: obj.itemId, quantity: obj.quantityAtLocation}
       ))
       if (!arraysEqual(data, res)) {
         setData(res);
@@ -91,7 +80,7 @@ export function InventoryTable() {
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={data} emptyContent={"You have not placed any order"}>
+      <TableBody items={data} emptyContent={"There are not items in this location"}>
         {(item) => (
           <TableRow key={item.key}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
