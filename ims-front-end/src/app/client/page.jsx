@@ -1,7 +1,7 @@
 "use client"
 
-import { OrdersTable } from "./components/OrderTable"
-import { useUserContext } from "../AppContext"
+import { OrdersTable } from "./components/OrderTable";
+import { useUserContext } from "../AppContext";
 import { redirect } from "next/navigation";
 
 
@@ -21,7 +21,7 @@ export default function Client() {
             <p>Client Type: {user.clientType}</p>
           </div>
           <div>
-            <OrdersTable />
+            <OrdersTable/>
           </div>
         </div>
 
