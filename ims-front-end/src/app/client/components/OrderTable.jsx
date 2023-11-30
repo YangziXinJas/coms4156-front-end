@@ -76,7 +76,7 @@ export function OrdersTable() {
 
 
   return (
-    <Table isStriped aria-label="Example static collection table">
+    <Table isStriped aria-label="Order History Table">
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
@@ -89,6 +89,4 @@ export function OrdersTable() {
       </TableBody>
     </Table>
   )
-}
-
-
+};
