@@ -65,14 +65,23 @@ export function OrdersTable() {
     }
   }, []);
 
+  const objectsEqual = (o1, o2) =>
+    Object.keys(o1).length === Object.keys(o2).length 
+        && Object.keys(o1).every(p => o1[p] === o2[p]);
+
+  const arraysEqual = (a1, a2) => 
+      a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
+
   useEffect(() => {
     fetchData().then((res) => {
       res = res.map((item, index) => (
         {key: index + 1 + "", orderId: item.orderId, orderDate: item.orderDate.split('T')[0], orderStatus: item.orderStatus}
       ))
-      setData(res);
+      if (!arraysEqual(data, res)) {
+        setData(res);
+      };
     });
-  },[setData]);
+  },[data]);
 
 
   return (
