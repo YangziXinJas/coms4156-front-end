@@ -85,11 +85,16 @@ export function OrdersTable() {
 
 
   return (
-    <Table isStriped aria-label="Order History Table">
+    <Table 
+      aria-label="Order History Table"
+      color={"default"}
+      defaultSelectedKeys={[]}
+      selectionMode="single"
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={data} emptyContent={"No rows to display."}>
+      <TableBody items={data} emptyContent={"You have not placed any order"}>
         {(item) => (
           <TableRow key={item.key}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
