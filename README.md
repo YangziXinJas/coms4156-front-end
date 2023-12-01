@@ -9,7 +9,7 @@
 ## End to End Testing
 * Run `npx cypress open`
 
-## What the client do
+## What the client does
 We implemented the most critical services we believe our platform should have for this iteration.
 * Allow user to register for an account and log in
 * Allow users to browse their order history
