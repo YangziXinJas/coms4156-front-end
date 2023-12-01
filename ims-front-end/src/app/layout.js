@@ -2,6 +2,8 @@ import { Inter } from 'next/font/google'
 import { Providers } from "./providers";
 import { UserProvider } from './AppContext';
 import './globals.css'
+import { Navbar, NavbarItem } from '@nextui-org/react';
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,6 +18,12 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Providers>
           <UserProvider>
+            <Navbar>
+              <NavbarItem>Home</NavbarItem>
+              <NavbarItem>
+                <Link href="/search">Search</Link>
+              </NavbarItem>
+            </Navbar>
             {children}
           </UserProvider>
         </Providers>
