@@ -63,3 +63,46 @@ describe('test login', () => {
     })
   })
 })
+
+describe('test register', () => {
+  beforeEach(() => {
+    cy.visit('/login')
+  })
+
+  describe('register with existing email inputs', () => {
+    it('show correct alert', () => {
+      cy.get('form[name=register-form]').within(() => {
+        cy.get('input[id=email]').type('test10@gmail.com')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button[type=submit]').click()
+        cy.on('window:alert', (txt) => {
+          expect(txt).to.equal("Client already exists")
+        })
+      })
+    })
+  })
+
+  describe('register with invalid inputs', () => {
+    it('show correct alert when email is invalid', () => {
+      cy.get('form[name=register-form]').within(() => {
+        cy.get('input[id=email]').type('test10@gmail')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button[type=submit]').click()
+        cy.on('window:alert', (txt) => {
+          expect(txt).to.equal("Invalid email format")
+        })
+      })
+    })
+
+    it('show correct alert when password is invalid', () => {
+      cy.get('form[name=register-form]').within(() => {
+        cy.get('input[id=email]').type('test99@gmail.com')
+        cy.get('input[id=password]').type('a1')
+        cy.get('button[type=submit]').click()
+        cy.on('window:alert', (txt) => {
+          expect(txt).to.equal("Password must contain at least 8 characters, one letter, and one number")
+        })
+      })
+    })
+  })
+})
