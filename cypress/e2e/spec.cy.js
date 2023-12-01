@@ -106,3 +106,45 @@ describe('test register', () => {
     })
   })
 })
+
+describe('client endpoint tests', () => {
+  describe('client is type retail', () => {
+    beforeEach(() => {
+      cy.visit('/login')
+      cy.get('form[name=login-form]').within(() => {
+        cy.get('input[id=email]').type('test4@outlook.com')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button').click()
+      })
+    })
+
+    it('should take user to client page', ()=> {
+      cy.url().should('match', /client/)
+    })
+
+    it('client page attributes should be correct', () => {
+      cy.get('[id=client-id]').contains('Client ID: 124')
+      cy.get('[id=client-type]').contains('retail')
+    })
+  })
+
+  describe('client is type warehouse', () => {
+    beforeEach(() => {
+      cy.visit('/login')
+      cy.get('form[name=login-form]').within(() => {
+        cy.get('input[id=email]').type('warehouse@outlook.com')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button').click()
+      })
+    })
+
+    it('should take user to client page', ()=> {
+      cy.url().should('match', /client/)
+    })
+
+    it('client page attributes should be correct', () => {
+      cy.get('[id=client-id]').contains('Client ID: 307')
+      cy.get('[id=client-type]').contains('warehouse')
+    })
+  })
+})
