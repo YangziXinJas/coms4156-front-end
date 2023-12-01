@@ -17,9 +17,6 @@ export default function Home() {
     router.push('/login');
   };
 
-  const navigateToCart = () => {
-    router.push('/cart');
-  };
 
 const navigateToSearch = () => {
     router.push('/search');
@@ -31,7 +28,6 @@ const navigateToSearch = () => {
         <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-4xl dark:text-white">{WebName}</h1>
         <div className="flex items-center">
           <button onClick={navigateToSearch} className="ml-2 p-2 border rounded">Search</button>
-          <button onClick={navigateToCart} className="ml-2 p-2 border rounded">Cart</button>
         </div>
       </header>
 

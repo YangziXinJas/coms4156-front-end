@@ -19,7 +19,9 @@ export default function RootLayout({ children }) {
         <Providers>
           <UserProvider>
             <Navbar>
-              <NavbarItem>Home</NavbarItem>
+              <NavbarItem>
+                <Link href="/">Home</Link>
+              </NavbarItem>
               <NavbarItem>
                 <Link href="/search">Search</Link>
               </NavbarItem>
