@@ -40,7 +40,7 @@ const navigateToSearch = () => {
 
           <div className="md:w-1/3 mt-4 md:mt-0">
             <iframe
-              src="https://www.google.com/maps/embed?pb=..."
+              src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d12084.173820644099!2d-73.9712484!3d40.7830588!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1701797313278!5m2!1sen!2sus"
               width="100%"
               height="280"
               style={{ border: "0" }}
