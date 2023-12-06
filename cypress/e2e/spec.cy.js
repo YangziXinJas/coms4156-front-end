@@ -217,3 +217,48 @@ describe('order page tests', () => {
     })    
   })
 })
+
+describe('search page test', () => {
+  beforeEach(() => {
+    cy.visit('/login')
+    cy.get('form[name=login-form]').within(() => {
+      cy.get('input[id=email]').type('test4@outlook.com')
+      cy.get('input[id=password]').type('a12345678')
+      cy.get('button').click()
+    })
+    cy.url().should('match',/client/)
+    cy.get('a').contains('Search').click()
+    cy.url().should('match',/search/)
+  })
+
+  describe('search location', () => {
+    it('takes to correct page', () => {
+      cy.get('input[id=location-id]').type('2')
+      cy.get('button').eq(0).click()
+      cy.url().should('match', /location\/[\d]/)
+    })
+
+    describe('when location has items', () => {
+      beforeEach(() => {
+        cy.get('input[id=location-id]').type('2')
+        cy.get('button').eq(0).click()
+      })
+      
+      it('has a non-empty table', () => {
+        cy.get('tbody > tr').should('not.be.empty')
+      })
+    })
+
+    describe('when location has no items', () => {
+      beforeEach(() => {
+        cy.get('input[id=location-id]').type('1')
+        cy.get('button').eq(0).click()
+      })
+      
+      it('has an empty table', () => {
+        cy.get('tbody > tr').should('have.length', 1)
+        cy.get('tbody > tr > td').invoke('html').should('eq', 'There are not items in this location')
+      })
+    })
+  })
+})
