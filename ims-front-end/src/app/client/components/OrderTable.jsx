@@ -29,6 +29,7 @@ export function OrdersTable() {
   ];
   const [ data, setData ] = useState([]);
   const { user } = useUserContext();
+
   const fetchData = async () => {
     const response = await fetch("http://localhost:8001/order/retrieve/client/" + user.clientId, {
       method: "GET",
@@ -74,6 +75,9 @@ export function OrdersTable() {
 
   useEffect(() => {
     fetchData().then((res) => {
+      if (!Array.isArray(res)) {
+        res = [];
+      }
       res = res.map((item, index) => (
         {key: index + 1 + "", orderId: item.orderId, orderDate: item.orderDate.split('T')[0], orderStatus: item.orderStatus}
       ))
