@@ -270,3 +270,42 @@ describe('search page test', () => {
     })
   })
 })
+
+describe('ItemDetail E2E Tests', () => {
+  const baseSearchUrl = '/search';
+  beforeEach(() => {
+    cy.visit('/login')
+    cy.get('form[name=login-form]').within(() => {
+      cy.get('input[id=email]').type('test4@outlook.com')
+      cy.get('input[id=password]').type('a12345678')
+      cy.get('button').click()
+    });
+
+    // Wait for the login process to complete and home page to load
+    cy.url().should('include', '/client');
+
+    // Navigate to the search page by clicking the navbar link
+    cy.get('nav').contains('Search').click();
+  });
+
+  it('displays item details correctly', () => {
+    cy.get('input[id="item-id"]').type("18");
+    cy.get('#search-item-button').click();
+    cy.get('h2').should('contain', 'spicy ramen');
+
+    cy.get('.item-description').should('contain','spicy ramen noodles')
+
+    cy.get('.item-price').should('contain', '$3');
+    cy.get('.item-stock-level').should('contain', '8');
+
+    cy.get('.related-Item').first().click();
+    const relatedItemId = 19;
+    cy.url().should('eq', 'http://localhost:3000/search/items/' + relatedItemId);
+  });
+
+
+  it('displays barcode image', () => {
+    cy.get('.item-barcode').should('not.exist');
+  });
+
+});

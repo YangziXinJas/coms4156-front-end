@@ -97,9 +97,9 @@ export default function ItemDetail({ params }) {
               {barcodeImageUrl && (
                   <img src={barcodeImageUrl} alt={`Barcode for ${item.name}`} className="my-4" />
               )}
-              <p className="text-gray-600 dark:text-gray-200 my-4">{item.description}</p>
-              <p className="text-lg font-bold">Price: ${item.price}</p>
-              <p className="mb-4">Current Stock Level: {item.currentStockLevel}</p>
+              <p className="text-gray-600 dark:text-gray-200 my-4 item-description">{item.description}</p>
+              <p className="text-lg font-bold item-price">Price: ${item.price}</p>
+              <p className="mb-4 item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
               <div>
             <label htmlFor="quantity" className="mr-2">Quantity:</label>
             <input type="number" id="quantity" defaultValue={1} min={1} max={item.currentStockLevel} className="border rounded px-2 py-1 text-gray-800" />
@@ -113,7 +113,7 @@ export default function ItemDetail({ params }) {
             {relatedItems.map(relatedItem => (
                 <div
                     key={relatedItem.id}
-                    className="border p-4 rounded-lg cursor-pointer"
+                    className="border p-4 rounded-lg cursor-pointer related-Item"
                     onClick={() => navigateToItem(relatedItem.id)}
                 >
                     <Image
