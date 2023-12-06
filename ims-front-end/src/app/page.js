@@ -18,17 +18,10 @@ export default function Home() {
   };
 
 
-const navigateToSearch = () => {
-    router.push('/search');
-  };
-
   return (
     <div className="container mx-auto px-4 dark:bg-gray-800">
       <header className="flex justify-between items-center py-4">
         <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-4xl dark:text-white">{WebName}</h1>
-        <div className="flex items-center">
-          <button onClick={navigateToSearch} className="ml-2 p-2 border rounded">Search</button>
-        </div>
       </header>
 
 <div className="my-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow">
