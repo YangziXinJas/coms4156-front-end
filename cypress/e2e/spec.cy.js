@@ -107,7 +107,7 @@ describe('test register', () => {
   })
 })
 
-describe('client endpoint tests', () => {
+describe('client page tests', () => {
   describe('client is type retail', () => {
     beforeEach(() => {
       cy.visit('/login')
@@ -123,8 +123,8 @@ describe('client endpoint tests', () => {
     })
 
     it('client page attributes should be correct', () => {
-      cy.get('[id=client-id]').contains('Client ID: 124')
-      cy.get('[id=client-type]').contains('retail')
+      cy.get('[id=client-id]').should('have.html','Client ID: 124')
+      cy.get('[id=client-type]').should('have.html','Client Type: retail')
     })
   })
 
@@ -143,8 +143,38 @@ describe('client endpoint tests', () => {
     })
 
     it('client page attributes should be correct', () => {
-      cy.get('[id=client-id]').contains('Client ID: 307')
-      cy.get('[id=client-type]').contains('warehouse')
+      cy.get('[id=client-id]').should('have.html', 'Client ID: 307')
+      cy.get('[id=client-type]').should('have.html', 'Client Type: warehouse')
+    })
+  })
+
+  describe('when client has no orders', () => {
+    beforeEach(() => {
+      cy.visit('/login')
+      cy.get('form[name=login-form]').within(() => {
+        cy.get('input[id=email]').type('warehouse@outlook.com')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button').click()
+      })
+    })
+
+    it('order table should be empty and show correct message', () => {
+      cy.get('td').should('have.html', 'You have not placed any order')
+    })
+  })
+
+  describe('when client has orders', () => {
+    beforeEach(() => {
+      cy.visit('/login')
+      cy.get('form[name=login-form]').within(() => {
+        cy.get('input[id=email]').type('test4@outlook.com')
+        cy.get('input[id=password]').type('a12345678')
+        cy.get('button').click()
+      })
+    })
+
+    it('order table should not be empty', () => {
+      cy.get('tr').should('have.length', 3)
     })
   })
 })
