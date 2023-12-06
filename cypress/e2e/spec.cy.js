@@ -178,3 +178,42 @@ describe('client page tests', () => {
     })
   })
 })
+
+describe('order page tests', () => {
+  beforeEach(() => {
+    cy.visit('/login')
+    cy.get('form[name=login-form]').within(() => {
+      cy.get('input[id=email]').type('test4@outlook.com')
+      cy.get('input[id=password]').type('a12345678')
+      cy.get('button').click()
+    })
+    cy.get('tbody').within(() => {
+      cy.get('tr').first().get('a').click()
+    })
+  })
+
+  it('should be on order page', () => {
+    cy.url().should('match', /client\/order\/[\d]/)
+  })
+
+  it('should have order number', () => {
+    cy.get('h1').first().invoke('html').should('match', /Order Number #[\d]/)
+  })
+
+  it('should have order type', () => {
+    cy.get('div').contains('Order Type: ').invoke('html').should('match',/Order Type: [buy|rent]/)
+  })
+
+  it('should have order date', () => {
+    cy.get('div').contains('Order Date: ').invoke('html').should('match',/Order Date: [/^\d{4}-\d{2}-\d{2}$/]/)
+  })
+
+  it('should have correct', () => {
+    const toStrings = (cells$) => Cypress._.map(cells$, 'textContent')
+    const toNumbers = (texts) => Cypress._.map(texts, Number)
+    const sum = (numbers) => Cypress._.sum(numbers)
+    cy.get('thead').contains('Price').get('tbody').get("tr td:nth-child(2)").then(toStrings).then(toNumbers).then(sum).then(total => {
+      cy.get('div').contains('Subtotal: ').invoke('html').should('eq', 'Subtotal: ' + total)
+    })    
+  })
+})
