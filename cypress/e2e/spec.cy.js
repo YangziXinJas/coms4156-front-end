@@ -261,4 +261,12 @@ describe('search page test', () => {
       })
     })
   })
+
+  describe('search item', () => {
+    it('takes to correct page', () => {
+      cy.get('input[id=item-id]').type('1')
+      cy.get('button').eq(1).click()
+      cy.url().should('match', /search\/items\/[\d]/)
+    })
+  })
 })
