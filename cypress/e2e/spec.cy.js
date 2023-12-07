@@ -214,7 +214,7 @@ describe('order page tests', () => {
     const sum = (numbers) => Cypress._.sum(numbers)
     cy.get('thead').contains('Price').get('tbody').get("tr td:nth-child(2)").then(toStrings).then(toNumbers).then(sum).then(total => {
       cy.get('div').contains('Subtotal: ').invoke('html').should('eq', 'Subtotal: ' + total)
-    })    
+    })
   })
 })
 
@@ -243,7 +243,7 @@ describe('search page test', () => {
         cy.get('input[id=location-id]').type('2')
         cy.get('button').eq(0).click()
       })
-      
+
       it('has a non-empty table', () => {
         cy.get('tbody > tr').should('not.be.empty')
       })
@@ -254,7 +254,7 @@ describe('search page test', () => {
         cy.get('input[id=location-id]').type('1')
         cy.get('button').eq(0).click()
       })
-      
+
       it('has an empty table', () => {
         cy.get('tbody > tr').should('have.length', 1)
         cy.get('tbody > tr > td').invoke('html').should('eq', 'There are not items in this location')
@@ -296,7 +296,13 @@ describe('ItemDetail E2E Tests', () => {
     cy.get('.item-description').should('contain','spicy ramen noodles')
 
     cy.get('.item-price').should('contain', '$3');
-    cy.get('.item-stock-level').should('contain', '8');
+    cy.get('.item-stock-level').should('contain', '24');
+
+    cy.get('.item-location').should('have.length.at.least', 1)
+        .and(($locations) => {
+          expect($locations).to.contain('Location ID:')
+          expect($locations).to.contain('Quantity at Location:')
+        });
 
     cy.get('.related-Item').first().click();
     const relatedItemId = 19;
