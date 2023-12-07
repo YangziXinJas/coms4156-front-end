@@ -34,7 +34,7 @@ export default function ItemDetail({ params }) {
                 setItem(data);
                 setFetchStatus('success');
 
-                // Fetch barcode image URL
+
                 const barcodeResponse = await fetch(`http://localhost:8001/item/barcode/${params.id}`);
                 if (barcodeResponse.ok) {
                     const barcodeBlob = await barcodeResponse.blob();
@@ -97,14 +97,9 @@ export default function ItemDetail({ params }) {
               {barcodeImageUrl && (
                   <img src={barcodeImageUrl} alt={`Barcode for ${item.name}`} className="my-4" />
               )}
-              <p className="text-gray-600 dark:text-gray-200 my-4 item-description">{item.description}</p>
+              <p className="text-gray-600 dark:text-gray-200 my-4 item-description">Description: {item.description}</p>
               <p className="text-lg font-bold item-price">Price: ${item.price}</p>
-              <p className="mb-4 item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
-              <div>
-            <label htmlFor="quantity" className="mr-2">Quantity:</label>
-            <input type="number" id="quantity" defaultValue={1} min={1} max={item.currentStockLevel} className="border rounded px-2 py-1 text-gray-800" />
-            <button className="ml-2 bg-primary-600 text-white px-5 py-2.5 rounded">Add To Order</button>
-          </div>
+              <p className="text-lg font-bold item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
         </div>
       </div>
 
