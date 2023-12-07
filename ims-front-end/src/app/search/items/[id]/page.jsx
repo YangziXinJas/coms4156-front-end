@@ -9,6 +9,7 @@ import { useUserContext } from '@/app/AppContext';
 export default function ItemDetail({ params }) {
     const router = useRouter();
     const [item, setItem] = useState(null);
+    const [locationData, setLocationData] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useUserContext();
     const [fetchStatus, setFetchStatus] = useState(null);
@@ -33,6 +34,23 @@ export default function ItemDetail({ params }) {
                 const data = await response.json();
                 setItem(data);
                 setFetchStatus('success');
+                const locationResponse = await fetch(`http://localhost:8001/itemLocation/getByItemId/${params.id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + user.token
+                    },
+                });
+
+                if (locationResponse.ok) {
+                    const locationDataRaw = await locationResponse.json();
+                    const transformedLocationData = locationDataRaw.map((location, index) => ({
+                        key: index + 1,
+                        locationId: location.locationId,
+                        quantityAtLocation: location.quantityAtLocation
+                    }));
+                    setLocationData(transformedLocationData);
+                }
 
 
                 const barcodeResponse = await fetch(`http://localhost:8001/item/barcode/${params.id}`);
@@ -100,7 +118,13 @@ export default function ItemDetail({ params }) {
               <p className="text-gray-600 dark:text-gray-200 my-4 item-description">Description: {item.description}</p>
               <p className="text-lg font-bold item-price">Price: ${item.price}</p>
               <p className="text-lg font-bold item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
-        </div>
+              {locationData.map(location => (
+                  <div key={location.key} className="item-location">
+                      <span>Location ID: {location.locationId}</span>
+                      <span>, Quantity at Location: {location.quantityAtLocation}</span>
+                  </div>
+              ))}
+          </div>
       </div>
 
       <h3 className="text-xl font-semibold mb-4">Related Items</h3>
