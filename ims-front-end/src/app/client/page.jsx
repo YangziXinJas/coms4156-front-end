@@ -4,12 +4,14 @@ import {OrdersTable} from "./components/OrderTable";
 import {useUserContext} from "../AppContext";
 import {redirect} from "next/navigation";
 import {ItemTable} from "@/app/client/components/ItemTable";
+import Link from "next/link";
 
 
 export default function Client() {
   const {user} = useUserContext();
 
   if (Object.keys(user).length === 0) {
+    console.log(`HEHREHRHEHREHRHERE User is ${Object.keys(user).length === 0}`);
     redirect("/login");
   }
 
@@ -26,7 +28,14 @@ export default function Client() {
           <div>
             <div className="mt-4">Order List</div>
             <OrdersTable/>
-            <div className="mt-4">Inventory List</div>
+            <div className="flex justify-between items-center mt-4">
+              <div>Inventory List</div>
+              <div
+                className="text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1 text-center">
+                <Link href="../item/new">New Inventory Item</Link>
+              </div>
+
+            </div>
             <ItemTable/>
           </div>
         </div>
@@ -43,5 +52,6 @@ export default function Client() {
         </div> */}
       </div>
     </div>
-  );
+  )
+    ;
 };
