@@ -61,12 +61,12 @@ export function ItemTable() {
       case "itemId":
         return (
           // TODO: change the link
-          <Link href={`/client/order/${cellValue}`}>{cellValue}</Link>
+          <Link href={`/search/items/${itemId}`}>{cellValue}</Link>
         );
       case "name":
         return (
           // TODO: change the link
-          <Link href={`/client/order/${cellValue}`}>{cellValue}</Link>
+          <Link href={`/search/items/${itemId}`}>{cellValue}</Link>
         );
       case "currentStockLevel":
         return (
@@ -100,6 +100,7 @@ export function ItemTable() {
       res = res.map((item, index) => (
         {
           key: index + 1 + "",
+          itemId: item.itemId,
           name: item.name,
           currentStockLevel: item.currentStockLevel,
           description: item.description,

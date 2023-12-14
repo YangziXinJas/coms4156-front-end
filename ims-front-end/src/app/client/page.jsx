@@ -1,27 +1,33 @@
-"use client"
+"use client";
 
-import { OrdersTable } from "./components/OrderTable";
-import { useUserContext } from "../AppContext";
-import { redirect } from "next/navigation";
+import {OrdersTable} from "./components/OrderTable";
+import {useUserContext} from "../AppContext";
+import {redirect} from "next/navigation";
+import {ItemTable} from "@/app/client/components/ItemTable";
 
 
 export default function Client() {
-  const { user } = useUserContext();
+  const {user} = useUserContext();
 
   if (Object.keys(user).length === 0) {
     redirect("/login");
   }
-  
+
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="flex flex-row items-center justify-center w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-full xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+    <div
+      className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <div
+        className="flex flex-row items-center justify-center w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-full xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-3/5 px-6 py-8 flex flex-col gap-4">
           <div className="flex flex-row gap-8">
             <p id="client-id">Client ID: {user.clientId}</p>
             <p id="client-type">Client Type: {user.clientType}</p>
           </div>
           <div>
+            <div className="mt-4">Order List</div>
             <OrdersTable/>
+            <div className="mt-4">Inventory List</div>
+            <ItemTable/>
           </div>
         </div>
 
@@ -37,5 +43,5 @@ export default function Client() {
         </div> */}
       </div>
     </div>
-  )
+  );
 };
