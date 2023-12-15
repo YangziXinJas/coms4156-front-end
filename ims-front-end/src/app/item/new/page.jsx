@@ -67,14 +67,14 @@ export default function NewInventoryEntry() {
     }
   };
 
-  const fetchLocations = async () => {
+  const fetchLocations = async (newItems) => {
     // Iterate through this list and put the locationIds in a set
     // Get the location objects and store them in the array (CHANGE "New location" to an object
     // as well with just the "name" being New location)
     try {
       // For each itemId, get a list of item locations (/itemLocation/getByItemId/{itemId})
       const allItemLocations = [];
-      for (const item of items) {
+      for (const item of newItems) {
         if (item.itemId === -1) continue; // to skip the "New Item" entry
         const response = await fetch(`http://localhost:8001/itemLocation/getByItemId/${item.itemId}`, {
           method: "GET",
@@ -85,7 +85,7 @@ export default function NewInventoryEntry() {
         });
 
         if (!response.ok) {
-          console.log(`HTTP error when getting item location list for ${item.itemId}, status: ${response.status}`);
+          console.error(`HTTP error when getting item location list for ${item.itemId}, status: ${response.status}`);
           continue;
         }
         const itemLocations = await response.json();
@@ -110,7 +110,7 @@ export default function NewInventoryEntry() {
           });
 
           if (!response.ok) {
-            console.log(`HTTP error when getting location detail for ${id}, status: ${response.status}`);
+            console.error(`HTTP error when getting location detail for ${id}, status: ${response.status}`);
             return null;
           }
 
@@ -133,30 +133,19 @@ export default function NewInventoryEntry() {
   useEffect(() => {
     const fetchData = async () => {
       const newItems = await fetchItems();
-      console.log(`Items: ${items}`);
-      console.log(`New items: ${newItems}`);
       setItems(items => [{name: "New Item", itemId: -1}, ...newItems]);
-      const newLocations = await fetchLocations();
+      const newLocations = await fetchLocations(newItems);
       setLocations(locations => [{name: "New Location", locationId: -1}, ...newLocations]);
     };
 
     fetchData();
 
-
-    // When a location is selected, use the set state methods to set the fields
-    // TODO: figure out a way to make the form fields not editable!
-    // TODO: do the same selection field stuff for item as well. Since an item may already exist
-    //  and we are just adding a new location. Also the case that the item is already at the
-    //  location -> just push an update to the ItemLocation's stock!
     // TODO: summary:
     //  - new item, new location -> create item, create location, create ItemLocation
     //  - new item, existing location -> create item, create ItemLocation
     //  - existing item, new location -> potentially update the item, create location, create
     //  ItemLocation
     //  - existing item, existing location -> update ItemLocation
-
-    // TODO: boolean to indicate whether the address is new? Make sure that this field toggles
-    //  on and off properly!!!
   }, []);
 
   const handleSubmit = async (event) => {
@@ -235,6 +224,7 @@ export default function NewInventoryEntry() {
 
   const handleLocationSelect = (key) => {
     const keyNum = parseInt(key, 10);
+
     setSelectedLocation(keyNum);
     const targetLocation = locations.find(location => location.locationId === keyNum);
     if (!targetLocation) {
