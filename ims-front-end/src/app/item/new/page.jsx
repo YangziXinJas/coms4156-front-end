@@ -12,7 +12,6 @@ import {
 } from "@nextui-org/react";
 import {useUserContext} from "../../AppContext";
 import {redirect} from "next/navigation";
-import {useRouter} from "next/router";
 
 export default function NewInventoryEntry() {
   const {user} = useUserContext();
@@ -35,14 +34,35 @@ export default function NewInventoryEntry() {
     // TODO: fetch locations from the database and update the "locations" state
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // something like:
-    console.log("Item Name:", itemName);
-    console.log("Item Stock Level:", itemStockLevel);
-    console.log("Item Price:", itemPrice);
-    console.log("Item Description:", itemDescription);
+    const itemData = {
+      clientId: user.clientId,
+      name: itemName,
+      currentStockLevel: parseInt(itemStockLevel, 10),
+      description: itemDescription,
+      price: parseFloat(itemPrice)
+    };
+
+    try {
+      const response = await fetch("http://localhost:8001/item/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + user.token
+        },
+        body: JSON.stringify(itemData)
+      });
+
+      if (!response.ok) {
+        alert(`HTTP error when adding item, status: ${response.status}`);
+        return;
+      }
+    } catch (error) {
+      console.error("Adding item failed: ", error);
+      return;
+    }
 
     window.location.href = "/client";
   };
