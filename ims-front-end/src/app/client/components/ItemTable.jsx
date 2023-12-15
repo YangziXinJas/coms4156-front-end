@@ -6,7 +6,7 @@ import {
   TableColumn,
   TableBody,
   TableRow,
-  TableCell,
+  TableCell, Button,
 } from "@nextui-org/react";
 import {useState, useEffect, useCallback} from "react";
 import {useUserContext} from "../../AppContext";
@@ -33,6 +33,10 @@ export function ItemTable() {
     {
       key: "price",
       label: "Price"
+    },
+    {
+      key: "edit",
+      label: "Edit"
     }
   ];
   const [data, setData] = useState([]);
@@ -80,6 +84,23 @@ export function ItemTable() {
         return (
           <div>{cellValue}</div>
         );
+      case "edit":
+        return (
+          <Link
+            href={{
+              pathname: "/item/edit",
+              query: {
+                itemId: item.itemId,
+                name: item.name,
+                price: item.price,
+                description: item.description
+              }
+            }}
+            className="inline-block text-center text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 px-2 py-1 rounded"
+          >
+            Edit
+          </Link>
+        );
       default:
         return cellValue;
     }
@@ -122,7 +143,8 @@ export function ItemTable() {
       selectionMode="single"
     >
       <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+        {(column) => <TableColumn
+          key={column.key}>{column.key === "edit" ? "" : column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={data} emptyContent={"No inventory items"}>
         {(item) => (

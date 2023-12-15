@@ -30,7 +30,7 @@ export default function Login() {
     }).catch(e => {
       console.log(e);
     })
-    
+
     if (!response.ok) {
       const result = await response.json();
       alert(result.message);
@@ -38,6 +38,8 @@ export default function Login() {
       const result = await response.json();
       const jwtData = await processJWT(result.token, result.clientId);
       setUser({token: result.token, ...jwtData});
+      localStorage.setItem("clientId", result.clientId);
+      localStorage.setItem("token", result.token);
       router.push("/client");
     }
   };
@@ -95,7 +97,7 @@ export default function Login() {
         </div>
 
         <div className="h-[500px] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-20 dark:opacity-100"></div>
-        
+
         <div className="flex-1 w-96">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -117,15 +119,15 @@ export default function Login() {
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
                 <Dropdown>
                   <DropdownTrigger>
-                    <Button 
-                      variant="bordered" 
+                    <Button
+                      variant="bordered"
                       className="capitalize"
                       color="secondary"
                     >
                       {selectedValue}
                     </Button>
                   </DropdownTrigger>
-                  <DropdownMenu 
+                  <DropdownMenu
                     aria-label="Single selection example"
                     variant="flat"
                     disallowEmptySelection

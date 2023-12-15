@@ -11,9 +11,10 @@ import {
   DropdownItem
 } from "@nextui-org/react";
 import {useUserContext} from "../../AppContext";
-import {redirect} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 
 export default function NewInventoryEntry() {
+  const router = useRouter();
   const {user} = useUserContext();
   const [itemName, setItemName] = useState("");
   const [itemStockLevel, setItemStockLevel] = useState("");
@@ -64,11 +65,11 @@ export default function NewInventoryEntry() {
       return;
     }
 
-    window.location.href = "/client";
+    router.push("/client");
   };
 
   const handleCancel = () => {
-    window.location.href = "/client";
+    router.push("/client");
   };
 
   const handleLocationSelect = (key) => {
