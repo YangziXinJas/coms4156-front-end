@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google'
-import { Providers } from "./providers";
+import { NextUIProviders } from "./providers";
 import { UserProvider } from './AppContext';
 import './globals.css'
 import { Navbar, NavbarItem } from '@nextui-org/react';
@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
+        <NextUIProviders>
           <UserProvider>
             <Navbar>
               <NavbarItem>
@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
             </Navbar>
             {children}
           </UserProvider>
-        </Providers>
+        </NextUIProviders>
       </body>
     </html>
   )
