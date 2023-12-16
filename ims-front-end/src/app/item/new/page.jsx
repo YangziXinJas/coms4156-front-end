@@ -37,6 +37,7 @@ export default function NewInventoryEntry() {
   const [selectedLocationName, setSelectedLocationName] = useState("");
 
   // Location form values
+  const [locationName, setLocationName] = useState("");
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [zipcode, setZipcode] = useState("");
@@ -139,48 +140,149 @@ export default function NewInventoryEntry() {
     };
 
     fetchData();
-
-    // TODO: summary:
-    //  - new item, new location -> create item, create location, create ItemLocation
-    //  - new item, existing location -> create item, create ItemLocation
-    //  - existing item, new location -> potentially update the item, create location, create
-    //  ItemLocation
-    //  - existing item, existing location -> update ItemLocation
   }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // TODO: Keep in mind the new item and new location have IDs of -1!! DO NOT INCLUDE THIS IN
-    //  THE UPDATE/NEW ENTRY -> create an itemData locationData construct like below.
-
     const itemData = {
       clientId: user.clientId,
       name: itemName,
-      currentStockLevel: parseInt(itemStockLevel, 10),
       description: itemDescription,
       price: parseFloat(itemPrice)
     };
 
-    try {
-      const response = await fetch("http://localhost:8001/item/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + user.token
-        },
-        body: JSON.stringify(itemData)
-      });
+    let curItemId = selectedItem;
+    if (selectedItem === -1) {
+      // New item, need to create one
+      try {
+        const response = await fetch("http://localhost:8001/item/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.token
+          },
+          body: JSON.stringify(itemData)
+        });
 
-      if (!response.ok) {
-        alert(`HTTP error when adding item, status: ${response.status}`);
+        if (!response.ok) {
+          alert(`HTTP error when adding item, status: ${response.status}`);
+          return;
+        }
+
+        const bd = await response.text();
+        curItemId = parseInt(bd, 10);
+      } catch (error) {
+        console.error("Adding item failed: ", error);
         return;
       }
-    } catch (error) {
-      console.error("Adding item failed: ", error);
-      return;
+    } else {
+      // Existing item, update its name, price, description
+      itemData.itemId = selectedItem;
+      delete itemData.clientId;
+      try {
+        const response = await fetch("http://localhost:8001/item/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.token
+          },
+          body: JSON.stringify(itemData)
+        });
+
+        if (!response.ok) {
+          alert(`HTTP error when updating item, status: ${response.status}`);
+          return;
+        }
+      } catch (error) {
+        console.error("Updating item failed: ", error);
+        return;
+      }
     }
 
+    const locationData = {
+      name: locationName,
+      address1: addressLine1,
+      address2: addressLine2,
+      clientId: user.clientId,
+      zipCode: zipcode
+    };
+
+    let curLocationId = selectedLocation;
+    if (selectedLocation === -1) {
+      // New Location, need to create one
+      try {
+        const response = await fetch("http://localhost:8001/location/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.token
+          },
+          body: JSON.stringify(locationData)
+        });
+
+        if (!response.ok) {
+          alert(`HTTP error when adding location, status: ${response.status}`);
+          return;
+        }
+
+        const bd = await response.text();
+        curLocationId = parseInt(bd, 10);
+      } catch (error) {
+        console.error("Adding location failed: ", error);
+        return;
+      }
+    }
+
+    // Then check:
+    const itemLocationData = {
+      itemId: curItemId,
+      locationId: curLocationId,
+      quantityAtLocation: parseInt(itemStockLevel, 10)
+    };
+    if (selectedItem !== -1 && selectedLocation !== -1 &&
+      itemLocations.find(iL => (iL.itemId === curItemId && iL.locationId === curLocationId))) {
+      // If item is not new, location is not new, and there is an existing item location, update item
+      // location's stock
+      try {
+        const response = await fetch("http://localhost:8001/itemLocation/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.token
+          },
+          body: JSON.stringify(itemLocationData)
+        });
+
+        if (!response.ok) {
+          alert(`HTTP error when updating itemLocation, status: ${response.status}, text: ${response.text()}`);
+          return;
+        }
+      } catch (error) {
+        console.error("Updating itemLocation failed: ", error);
+        return;
+      }
+    } else {
+      // add a new item location
+      try {
+        const response = await fetch("http://localhost:8001/itemLocation/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.token
+          },
+          body: JSON.stringify(itemLocationData)
+        });
+
+        if (!response.ok) {
+          alert(`HTTP error when adding itemLocation, status: ${response.status}`);
+          return;
+        }
+      } catch (error) {
+        console.error("Adding itemLocation failed: ", error);
+        return;
+      }
+    }
     router.push("/client");
   };
 
@@ -209,7 +311,7 @@ export default function NewInventoryEntry() {
       setItemName(targetItem.name);
 
       // Try to find if an itemLocation already exists
-      const targetItemLocation = itemLocations.find(iL => (iL.itemID === keyNum && iL.locationId === selectedLocation));
+      const targetItemLocation = itemLocations.find(iL => (iL.itemId === keyNum && iL.locationId === selectedLocation));
       if (!targetItemLocation) {
         setItemStockLevel("");
         setNeedItemLocation(true);
@@ -234,11 +336,17 @@ export default function NewInventoryEntry() {
     setSelectedLocationName(targetLocation.name);
 
     if (keyNum === -1) {
+      setLocationName("");
       setAddressLine1("");
       setAddressLine2("");
       setZipcode("");
       setLocFieldsDisabled(false);
     } else {
+      const targetItemLocation = itemLocations.find(iL => (iL.itemId === selectedItem && iL.locationId === keyNum));
+      if (targetItemLocation) {
+        setItemStockLevel(targetItemLocation.quantityAtLocation + "");
+      }
+      setLocationName(targetLocation.name);
       setAddressLine1(targetLocation.address1);
       setAddressLine2(targetLocation.address2);
       setZipcode(targetLocation.zipCode);
@@ -310,6 +418,15 @@ export default function NewInventoryEntry() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
+              <div className="mb-2">
+                <Input
+                  fullWidth
+                  label="Location Name"
+                  value={locationName}
+                  onChange={(e) => setLocationName(e.target.value)}
+                  disabled={locFieldsDisabled}
+                />
+              </div>
               <div className="mb-2">
                 <Input
                   fullWidth
