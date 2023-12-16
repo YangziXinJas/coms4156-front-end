@@ -4,6 +4,7 @@ import { UserProvider } from './AppContext';
 import './globals.css'
 import { Navbar, NavbarItem } from '@nextui-org/react';
 import Link from 'next/link'
+import Image from 'next/image';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,6 +25,15 @@ export default function RootLayout({ children }) {
               </NavbarItem>
               <NavbarItem>
                 <Link href="/search">Search</Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link href='/client'>
+                  <Image
+                    src="/user-icon.png"
+                    width={50}
+                    height={50}
+                  />
+                </Link>
               </NavbarItem>
             </Navbar>
             {children}
