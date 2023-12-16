@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useUserContext } from "@/app/AppContext";
 import { useRouter, redirect } from "next/navigation";
 
@@ -16,10 +16,44 @@ export default function OrderForm({params}) {
         quantity: '',
         amount: ''
     })
+    const [orderData, setOrderData] = useState({});
 
     if (Object.keys(user).length === 0) {
         redirect("/login");
     }
+
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8001/order/retrieve/order/${params.id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + user.token
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setOrderData(data[0]);
+                setOrderStatus(data[0].orderStatus);
+                const dueDateFormat = new Date(data[0].dueDate).toISOString().split('T')[0];
+                setDueDate(dueDateFormat);
+                setFormData({
+                    itemId: data[0].itemId.toString(),
+                    locationId: data[0].locationId.toString(),
+                    quantity: data[0].quantity.toString(),
+                    amount: data[0].amount.toString()
+                });
+            } catch (error) {
+                console.error('Error fetching order data:', error);
+                setError(error.message || 'Error fetching order data');
+            }
+        };
+
+        fetchOrderData();
+    }, [params.id]);
 
     const orderId = params.id;
     const closeModal = () => {
@@ -98,25 +132,25 @@ export default function OrderForm({params}) {
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="itemID">
                                     Item ID
                                 </label>
-                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="itemId" type="text" placeholder="Item ID" onChange={handleInputChange}/>
+                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="itemId" type="text" value={formData.itemId} onChange={handleInputChange}/>
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="locationID">
                                     Location ID
                                 </label>
-                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="locationId" type="text" placeholder="Location ID" onChange={handleInputChange} />
+                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="locationId" type="text" value={formData.locationId} onChange={handleInputChange} />
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="quantity">
                                     Quantity
                                 </label>
-                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="quantity" type="text" placeholder="Quantity" onChange={handleInputChange} />
+                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="quantity" type="text" value={formData.quantity} onChange={handleInputChange} />
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="amount">
                                     Amount
                                 </label>
-                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="amount" type="text" placeholder="Amount" onChange={handleInputChange}/>
+                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="amount" type="text" value={formData.amount} onChange={handleInputChange}/>
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="orderStatus">
@@ -133,7 +167,7 @@ export default function OrderForm({params}) {
                                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="dueDate">
                                     Due Date
                                 </label>
-                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="dueDate" type="date" placeholder="yyyy-mm-dd" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+                                <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="dueDate" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
                             </div>
                             <div className="flex justify-center mt-4">
                                 <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">

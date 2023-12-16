@@ -66,7 +66,9 @@ export function OrdersTable() {
         );
       case "edit":
         return(
-            <Link href={`/client/updateorder/${order.orderId}`}>edit</Link>
+            <Link href={`/client/updateorder/${order.orderId}`}
+              className="inline-block text-center text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 px-2 py-1 rounded"
+              >Edit</Link>
         )
       default:
         return cellValue;
