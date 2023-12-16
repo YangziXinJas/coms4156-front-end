@@ -27,7 +27,6 @@ export default function NewInventoryEntry() {
   const [itemPrice, setItemPrice] = useState("");
   const [itemDescription, setItemDescription] = useState("");
 
-  const [needNewItemLocation, setNeedItemLocation] = useState(false);
   const [itemLocations, setItemLocations] = useState([]);
   const [locations, setLocations] = useState([]);
   const [locFieldsDisabled, setLocFieldsDisabled] = useState(false);
@@ -255,7 +254,7 @@ export default function NewInventoryEntry() {
         });
 
         if (!response.ok) {
-          alert(`HTTP error when updating itemLocation, status: ${response.status}, text: ${response.text()}`);
+          alert(`HTTP error when updating itemLocation, status: ${response.status}`);
           return;
         }
       } catch (error) {
@@ -314,10 +313,8 @@ export default function NewInventoryEntry() {
       const targetItemLocation = itemLocations.find(iL => (iL.itemId === keyNum && iL.locationId === selectedLocation));
       if (!targetItemLocation) {
         setItemStockLevel("");
-        setNeedItemLocation(true);
       } else {
         setItemStockLevel(targetItemLocation.quantityAtLocation);
-        setNeedItemLocation(false);
       }
       setItemPrice(targetItem.price);
       setItemDescription(targetItem.description);
