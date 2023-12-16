@@ -144,11 +144,27 @@ export default function NewInventoryEntry() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const tmpItPrice = parseFloat(itemPrice);
+    if (isNaN(tmpItPrice)) {
+      alert("Item price must be a number");
+      return;
+    }
+    const tmpStockLevel = parseInt(itemStockLevel, 10);
+    if (isNaN(tmpStockLevel)) {
+      alert("Stock level must be an integer");
+      return;
+    }
+    const tmpZip = parseInt(zipcode, 10);
+    if (isNaN(tmpZip)) {
+      alert("Please enter a 5-digit zipcode");
+      return;
+    }
+
     const itemData = {
       clientId: user.clientId,
       name: itemName,
       description: itemDescription,
-      price: parseFloat(itemPrice)
+      price: tmpItPrice
     };
 
     let curItemId = selectedItem;
@@ -237,7 +253,7 @@ export default function NewInventoryEntry() {
     const itemLocationData = {
       itemId: curItemId,
       locationId: curLocationId,
-      quantityAtLocation: parseInt(itemStockLevel, 10)
+      quantityAtLocation: tmpStockLevel
     };
     if (selectedItem !== -1 && selectedLocation !== -1 &&
       itemLocations.find(iL => (iL.itemId === curItemId && iL.locationId === curLocationId))) {
