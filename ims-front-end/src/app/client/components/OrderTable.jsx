@@ -25,6 +25,9 @@ export function OrdersTable() {
     {
       key: "orderStatus",
       label: "Status"
+    },
+    {key: "edit",
+      label: ""
     }
   ];
   const [ data, setData ] = useState([]);
@@ -61,6 +64,10 @@ export function OrdersTable() {
         return (
           <div>{cellValue}</div>
         );
+      case "edit":
+        return(
+            <Link href={`/client/updateorder/${order.orderId}`}>edit</Link>
+        )
       default:
         return cellValue;
     }

@@ -51,13 +51,6 @@ export default function ItemDetail({ params }) {
                     }));
                     setLocationData(transformedLocationData);
                 }
-
-
-                const barcodeResponse = await fetch(`http://localhost:8001/item/barcode/${params.id}`);
-                if (barcodeResponse.ok) {
-                    const barcodeBlob = await barcodeResponse.blob();
-                    setBarcodeImageUrl(URL.createObjectURL(barcodeBlob));
-                }
             } catch (error) {
                 console.error('Error:', error);
                 setFetchStatus('error');
@@ -82,70 +75,55 @@ export default function ItemDetail({ params }) {
         return <div>No item found.</div>;
     }
 
-    const navigateToItem = (itemId) => {
-        router.push("/search/items/" + itemId);
-    };
-
-
-    const relatedItems = Array.from({ length: 4 }, (_, index) => ({
-        id: parseInt(item.itemId) + index + 1,
-        imageUrl: `/${parseInt(item.itemId) + index + 1}.jpeg`,
-    }));
-
-
-  return (
-    <div className="container mx-auto px-4 dark:bg-gray-800">
-      <header className="flex justify-between items-center py-4">
-        <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-4xl dark:text-white">Track & Trace Hub</h1>
-      </header>
-
-      <div className="flex flex-col md:flex-row my-8">
-        <div className="md:w-1/2 md:pr-4">
-            <Image
-                src={`/${item.itemId}.jpeg`}
-                alt={item.name}
-                width={500}
-                height={300}
-                layout="responsive"
-                className="rounded-lg"
-            />
-        </div>
-          <div className="md:w-1/2">
-              <h2 className="text-2xl font-semibold">{`${item.name} (ID: ${item.itemId})`}</h2>
-              {barcodeImageUrl && (
-                  <img src={barcodeImageUrl} alt={`Barcode for ${item.name}`} className="my-4" />
-              )}
-              <p className="text-gray-600 dark:text-gray-200 my-4 item-description">Description: {item.description}</p>
-              <p className="text-lg font-bold item-price">Price: ${item.price}</p>
-              <p className="text-lg font-bold item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
-              {locationData.map(location => (
-                  <div key={location.key} className="item-location">
-                      <span>Location ID: {location.locationId}</span>
-                      <span>, Quantity at Location: {location.quantityAtLocation}</span>
-                  </div>
-              ))}
-          </div>
-      </div>
-
-      <h3 className="text-xl font-semibold mb-4">Related Items</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {relatedItems.map(relatedItem => (
-                <div
-                    key={relatedItem.id}
-                    className="border p-4 rounded-lg cursor-pointer related-Item"
-                    onClick={() => navigateToItem(relatedItem.id)}
-                >
-                    <Image
-                        className="w-52 h-32 relative"
-                        src={relatedItem.imageUrl}
-                        alt={`Item ${relatedItem.id}`}
-                        width={150}
-                        height={100}
-                    />
-                    <p className="mt-2 text-center">Item {relatedItem.id}</p>
+    return (
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+            <div className="flex flex-row items-center justify-center w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-full xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="w-3/5 flex flex-row px-6 py-8 gap-4">
+                    <div className="md:w-1/2">
+                        <Image
+                            src={`/${item.itemId}.jpeg`}
+                            alt={item.name}
+                            width={500}
+                            height={300}
+                            layout="responsive"
+                            className="rounded-lg"
+                        />
+                    </div>
+                    <div className="md:w-1/2 flex flex-col justify-center">
+                        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{`${item.name} (ID: ${item.itemId})`}</h2>
+                        <p className="text-gray-600 dark:text-gray-200 my-4 item-description">Description: {item.description}</p>
+                        <p className="text-lg font-bold item-price">Price: ${item.price}</p>
+                        <p className="text-lg font-bold item-stock-level">Current Stock Level: {item.currentStockLevel}</p>
+                        <div className="overflow-hidden rounded-lg border border-gray-200 shadow mt-4">
+                            <table className="min-w-full leading-normal">
+                                <thead>
+                                <tr>
+                                    <th className="px-4 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Location ID
+                                    </th>
+                                    <th className="px-4 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Quantity at Location
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {locationData.map(location => (
+                                    <tr key={location.key}>
+                                        <td className="px-4 py-2 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{location.locationId}</p>
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{location.quantityAtLocation}</p>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            ))}
+            </div>
         </div>
-    </div>
-  );
+    );
+
 }
