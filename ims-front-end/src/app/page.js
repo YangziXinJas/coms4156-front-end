@@ -4,10 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-const WebName = 'Track & Trace Hub';
-const Instructions = 'Discover the power of pinpoint precision with our web platform, Track & Trace Hub, your one-stop solution for all things inventory. With our system, you can effortlessly monitor item statuses, pinpoint their locations, and keep a vigilant eye on stock levels to ensure you\'re never caught off guard. Navigate through our intuitive dashboard to place orders from various item locations, tailored to meet your unique business needs. Dive into the details of each item, examine the intricacies of every location, scrutinize order histories, and pore over the specifics of order details to gain a comprehensive understanding of your inventory landscape. What\'s more, you can enlist in our community by signing up, unlocking the full potential of our web services. Take the leap with Track & Trace Hub and transform how you manage, order, and analyze your inventory—because when it comes to asset management, knowledge isn\'t just power; it\'s profit.';
-
-const items = [1000001, 1000002, 1000003, 1000004, 1000005, 1000006, 1000007, 1000008];
+const WebName = 'HealthWare Logistics';
+const Instructions = 'Explore the streamlined efficiency of HealthWare Logistics, your premier partner in medical inventory management. Our HealthWare Logistics is expertly designed for the healthcare sector, offering a powerful, yet intuitive platform to monitor, manage, and analyze medical supplies with unparalleled precision. From tracking real-time item statuses to managing stock levels across multiple locations, our system ensures you\'re always prepared and never caught off guard. Delve into detailed order histories, place orders with ease, and gain insightful analytics to keep your operations running smoothly. Embrace HealthWare Logistics and elevate your inventory strategy to the next level of excellence.'
+const items = [31, 32, 33, 34, 35, 36, 37, 38];
 
 export default function Home() {
 
@@ -21,7 +20,8 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 dark:bg-gray-800">
       <header className="flex justify-between items-center py-4">
-        <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-4xl dark:text-white">{WebName}</h1>
+             <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-4xl dark:text-white">{WebName}</h1>
+
       </header>
 
 <div className="my-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow">

@@ -14,6 +14,7 @@ export default function ItemDetail({ params }) {
     const { user } = useUserContext();
     const [fetchStatus, setFetchStatus] = useState(null);
     const [barcodeImageUrl, setBarcodeImageUrl] = useState('');
+    const [src, setSrc] = useState('');
 
 
     useEffect(() => {
@@ -44,12 +45,27 @@ export default function ItemDetail({ params }) {
 
                 if (locationResponse.ok) {
                     const locationDataRaw = await locationResponse.json();
-                    const transformedLocationData = locationDataRaw.map((location, index) => ({
-                        key: index + 1,
-                        locationId: location.locationId,
-                        quantityAtLocation: location.quantityAtLocation
-                    }));
+                    const locationDataPromises = locationDataRaw.map(async (location) => {
+                        const locationDetailResponse = await fetch(`http://localhost:8001/location/get/${location.locationId}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + user.token
+                            },
+                        });
+                        const locationDetail = await locationDetailResponse.json();
+                        return {
+                            key: location.locationId,
+                            locationName: locationDetail.name,
+                            quantityAtLocation: location.quantityAtLocation
+                        };
+                    });
+
+                    const transformedLocationData = await Promise.all(locationDataPromises);
                     setLocationData(transformedLocationData);
+                }
+                if (item) {
+                    setSrc(`/${item.itemId}.jpeg`);
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -81,7 +97,7 @@ export default function ItemDetail({ params }) {
                 <div className="w-3/5 flex flex-row px-6 py-8 gap-4">
                     <div className="md:w-1/2">
                         <Image
-                            src={`/${item.itemId}.jpeg`}
+                            src={src || '/default.jpeg'}
                             alt={item.name}
                             width={500}
                             height={300}
@@ -102,6 +118,9 @@ export default function ItemDetail({ params }) {
                                         Location ID
                                     </th>
                                     <th className="px-4 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Location Name
+                                    </th>
+                                    <th className="px-4 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Quantity at Location
                                     </th>
                                 </tr>
@@ -110,7 +129,10 @@ export default function ItemDetail({ params }) {
                                 {locationData.map(location => (
                                     <tr key={location.key}>
                                         <td className="px-4 py-2 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{location.locationId}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{location.key}</p>
+                                        </td>
+                                        <td className="px-4 py-2 border-b border-gray-200 bg-white text-sm">
+                                            <p className="text-gray-900 whitespace-no-wrap">{location.locationName}</p>
                                         </td>
                                         <td className="px-4 py-2 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{location.quantityAtLocation}</p>
