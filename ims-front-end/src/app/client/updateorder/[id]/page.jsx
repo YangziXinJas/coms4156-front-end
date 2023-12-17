@@ -111,7 +111,7 @@ export default function OrderForm({params}) {
             });
 
             alert('Order updated successfully');
-            router.push('http://localhost:3001/client');
+            router.push('/client');
         } catch (error) {
             console.error('Error:', error);
             setError(error.message || 'Error updating order');

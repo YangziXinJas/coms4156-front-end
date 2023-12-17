@@ -133,9 +133,9 @@ export default function NewInventoryEntry() {
   useEffect(() => {
     const fetchData = async () => {
       const newItems = await fetchItems();
-      setItems(items => [{name: "New Item", itemId: -1}, ...newItems]);
+      setItems([{name: "New Item", itemId: -1}, ...newItems]);
       const newLocations = await fetchLocations(newItems);
-      setLocations(locations => [{name: "New Location", locationId: -1}, ...newLocations]);
+      setLocations([{name: "New Location", locationId: -1}, ...newLocations]);
     };
 
     fetchData();
@@ -358,6 +358,8 @@ export default function NewInventoryEntry() {
       const targetItemLocation = itemLocations.find(iL => (iL.itemId === selectedItem && iL.locationId === keyNum));
       if (targetItemLocation) {
         setItemStockLevel(targetItemLocation.quantityAtLocation + "");
+      } else {
+        setItemStockLevel("");
       }
       setLocationName(targetLocation.name);
       setAddressLine1(targetLocation.address1);
