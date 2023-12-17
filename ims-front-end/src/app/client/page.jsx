@@ -11,7 +11,6 @@ export default function Client() {
   const {user} = useUserContext();
 
   if (Object.keys(user).length === 0) {
-    console.log(`HEHREHRHEHREHRHERE User is ${Object.keys(user).length === 0}`);
     redirect("/login");
   }
 
