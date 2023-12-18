@@ -344,44 +344,44 @@ export default function OrderForm({params}) {
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="itemID">
                   Item Name
                 </label>
-                {/*<input*/}
-                {/*  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"*/}
-                {/*  id="itemId" type="text" value={formData.itemId} onChange={handleInputChange}/>*/}
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button variant="bordered">{selectedItemName || "Select Item"}</Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label="Items"
-                    onAction={handleItemSelect}
-                  >
-                    {itemsDisplay.map((item) => (
-                      <DropdownItem key={item.itemId}>{item.name}</DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
+                <input
+                  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                  id="itemId" type="text" value={selectedItemName} onChange={handleInputChange} disabled={true}/>
+                {/*<Dropdown>*/}
+                {/*  <DropdownTrigger>*/}
+                {/*    <Button variant="bordered">{selectedItemName || "Select Item"}</Button>*/}
+                {/*  </DropdownTrigger>*/}
+                {/*  <DropdownMenu*/}
+                {/*    aria-label="Items"*/}
+                {/*    onAction={handleItemSelect}*/}
+                {/*  >*/}
+                {/*    {itemsDisplay.map((item) => (*/}
+                {/*      <DropdownItem key={item.itemId}>{item.name}</DropdownItem>*/}
+                {/*    ))}*/}
+                {/*  </DropdownMenu>*/}
+                {/*</Dropdown>*/}
               </div>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="locationID">
                   Location Name
                 </label>
-                {/*<input*/}
-                {/*  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"*/}
-                {/*  id="locationId" type="text" value={formData.locationId}*/}
-                {/*  onChange={handleInputChange}/>*/}
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button variant="bordered">{selectedLocationName || "Select Location"}</Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label="Locations"
-                    onAction={handleLocationSelect}
-                  >
-                    {locationsDisplay.map((location) => (
-                      <DropdownItem key={location.locationId}>{location.name}</DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
+                <input
+                  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                  id="locationId" type="text" value={selectedLocationName}
+                  onChange={handleInputChange} disabled={true}/>
+                {/*<Dropdown>*/}
+                {/*  <DropdownTrigger>*/}
+                {/*    <Button variant="bordered">{selectedLocationName || "Select Location"}</Button>*/}
+                {/*  </DropdownTrigger>*/}
+                {/*  <DropdownMenu*/}
+                {/*    aria-label="Locations"*/}
+                {/*    onAction={handleLocationSelect}*/}
+                {/*  >*/}
+                {/*    {locationsDisplay.map((location) => (*/}
+                {/*      <DropdownItem key={location.locationId}>{location.name}</DropdownItem>*/}
+                {/*    ))}*/}
+                {/*  </DropdownMenu>*/}
+                {/*</Dropdown>*/}
               </div>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="quantity">
