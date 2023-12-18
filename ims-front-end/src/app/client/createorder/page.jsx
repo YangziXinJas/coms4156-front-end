@@ -257,7 +257,7 @@ export default function OrderForm() {
             <form className="px-8 pt-6 pb-8 mb-4 bg-white rounded" onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="itemID">
-                  Item ID
+                  Item Name
                 </label>
                 <Dropdown>
                   <DropdownTrigger>
@@ -275,7 +275,7 @@ export default function OrderForm() {
               </div>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="locationID">
-                  Location ID
+                  Location Name
                 </label>
                 {/*<input*/}
                 {/*  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"*/}
