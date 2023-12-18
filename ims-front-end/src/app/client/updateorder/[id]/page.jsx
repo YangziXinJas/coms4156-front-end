@@ -192,18 +192,23 @@ export default function OrderForm({params}) {
   };
 
   const handleItemSelect = (key) => {
-    if (selectedItem === -1 && selectedLocation === -1) {
-      // if item was changed from default, clear out location selection as it may not be
-      // available anymore
-      setSelectedLocation(-1);
-      setSelectedLocationName("");
-      setFormData({...formData, locationId: "-1"});
-    }
-
     // Key is a string!! convert it to number
     const keyNum = parseInt(key, 10);
+    const tmpFormData = {...formData};
+
+    if (selectedItem === -1 && selectedLocation === -1) {
+      const targetItemLoc = itemLocations.find(iL => iL.locationId === parseInt(formData.locationId, 10) && iL.itemId === keyNum);
+      if (!targetItemLoc) {
+        setSelectedLocationName("");
+        tmpFormData.locationId = "-1";
+      } else {
+        setSelectedLocation(parseInt(formData.locationId, 10));
+      }
+    }
+
     setSelectedItem(keyNum);
-    setFormData({...formData, itemId: key});
+    tmpFormData.itemId = key;
+    setFormData({...tmpFormData});
     const targetItem = items.find(item => item.itemId === keyNum);
     if (!targetItem) {
       alert(`Cannot find selected item in state.`);
@@ -221,18 +226,25 @@ export default function OrderForm({params}) {
   };
 
   const handleLocationSelect = (key) => {
-    if (selectedItem === -1 && selectedLocation === -1) {
-      // if location was changed from default, clear out item selection as it may not be
-      // available anymore
-      setSelectedItem(-1);
-      setSelectedItemName("");
-      setFormData({...formData, itemId: "-1"});
-    }
-
     // Key is a string!! convert it to number
     const keyNum = parseInt(key, 10);
+    const tmpFormData = {...formData};
+
+    if (selectedItem === -1 && selectedLocation === -1) {
+      const targetItemLoc = itemLocations.find(iL => iL.locationId === keyNum && iL.itemId === parseInt(formData.itemId, 10));
+      if (!targetItemLoc) {
+        // clear out item selection as it is not available at the new location
+        setSelectedItemName("");
+        tmpFormData.itemId = "-1";
+      } else {
+        // we are fine, just update the selectedItem state, no need to reset
+        setSelectedItem(parseInt(formData.itemId, 10));
+      }
+    }
+
     setSelectedLocation(keyNum);
-    setFormData({...formData, locationId: key});
+    tmpFormData.locationId = key;
+    setFormData({...tmpFormData});
     const targetLocation = locations.find(loc => loc.locationId === keyNum);
     if (!targetLocation) {
       alert(`Cannot find selected location in state.`);
@@ -252,12 +264,12 @@ export default function OrderForm({params}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (formData.itemId === -1) {
+    if (formData.itemId === "-1") {
       alert("Please select an item for the order");
       return;
     }
 
-    if (formData.locationId === -1) {
+    if (formData.locationId === "-1") {
       alert("Please select a location for the order");
       return;
     }
@@ -280,7 +292,7 @@ export default function OrderForm({params}) {
     };
 
     try {
-      await fetch("http://localhost:8001/order/update", {
+      const resp1 = await fetch("http://localhost:8001/order/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -289,7 +301,12 @@ export default function OrderForm({params}) {
         body: JSON.stringify(orderUpdateData)
       });
 
-      await fetch("http://localhost:8001/order/detail/update", {
+      if (!resp1.ok) {
+        alert("Failed to update order");
+        return;
+      }
+
+      const resp2 = await fetch("http://localhost:8001/order/detail/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -297,6 +314,11 @@ export default function OrderForm({params}) {
         },
         body: JSON.stringify(orderDetailUpdateData)
       });
+
+      if (!resp2.ok) {
+        alert("Failed to update order detail");
+        return;
+      }
 
       alert("Order updated successfully");
       router.push("/client");
@@ -320,7 +342,7 @@ export default function OrderForm({params}) {
             <form className="px-8 pt-6 pb-8 mb-4 bg-white rounded" onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="itemID">
-                  Item ID
+                  Item Name
                 </label>
                 {/*<input*/}
                 {/*  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"*/}
@@ -341,7 +363,7 @@ export default function OrderForm({params}) {
               </div>
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="locationID">
-                  Location ID
+                  Location Name
                 </label>
                 {/*<input*/}
                 {/*  className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"*/}
